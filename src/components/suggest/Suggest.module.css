@@ -1,0 +1,12 @@
+.suggest {
+    font-size: 12px;
+    margin-top: 10px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.suggestLink {
+    color: #1890FF;
+    text-decoration: none;
+}
+
+.suggestText {}

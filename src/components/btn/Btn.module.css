@@ -1,0 +1,11 @@
+.btn {
+    background: none;
+    border: none;
+    padding: 8px 15px;
+    margin-left: 19px;
+}
+
+.bordered {
+    border: 1px solid;
+    border-radius: 5px;
+}

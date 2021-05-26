@@ -1,0 +1,16 @@
+.blueBtn {
+    margin-top: 21px;
+    font-size: 16px;
+    width: 319px;
+    height: 40px;
+    border-radius: 6px;
+    border: none;
+    background-color: #1890FF;
+    color: #FFFFFF;
+    transition: color 0.55s, background-color 0.4s;
+}
+
+.blueBtn:hover {
+    color: #000000;
+    background-color: rgb(78, 220, 255);
+}
