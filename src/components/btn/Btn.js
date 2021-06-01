@@ -9,7 +9,7 @@ const Btn = props => {
         classes.push(bordered)
     
     return (
-        <button style={{fontSize: props.fontSize, color: props.color, borderColor: props.color || '#D9D9D9'}}
+        <button onClick={props.onClick} style={{fontSize: props.fontSize, color: props.color, borderColor: props.color || '#D9D9D9'}}
         className={classes.join(' ')}>{props.text}</button>
     )
 }

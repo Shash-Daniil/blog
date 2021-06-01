@@ -11,7 +11,14 @@ export const changePage = (page) => ({ type: 'CHANGE_PAGE', page, loading: true 
 
 export const setUser = (user) => ({ type: 'SET_USER', user })
 
+export const closeErrors = () => ({ type: 'ON_CLOSE_ERROR', errors: null })
+
 export const setErrors = (errors) => ({ type: 'SET_ERRORS', errors })
+
+export const onLogOut = () => {
+  localStorage.removeItem("user")
+  return ({ type: 'LOGOUT' })
+} 
 
 export const setSlug = (currentSlug) => ({ type: 'SET_SLUG', currentSlug })
 /* АСИНХРОННЫЕ ЭКШЕНЫ */
@@ -19,13 +26,15 @@ export const setSlug = (currentSlug) => ({ type: 'SET_SLUG', currentSlug })
 // eslint-disable-next-line arrow-body-style
 export const getArticles = (offset) => {
   return (dispatch) => {
-    blogService.getArticles(offset).then(resp => dispatch(receiveArticles(resp)))
+    blogService.getArticles(offset)
+      .then(resp => dispatch(receiveArticles(resp)))
   }
 }
 
 export const getOpenedArticle = (slug) => {
   return (dispatch) => {
-    blogService.getOpenedArticle(slug).then(resp => dispatch(receiveOpenedArticle(resp)))
+    blogService.getOpenedArticle(slug)
+      .then(resp => dispatch(receiveOpenedArticle(resp)))
   }
 }
 
@@ -35,14 +44,22 @@ export const onRegister = (user) => {
   }
 }
 
+export const updateUser = (data, token) => {
+  return dispatch => {
+    blogService.onUpdateUser(data, token)
+      .then(user => dispatch(setUser(user)))
+  }
+}
+
 export const onLogin = (user) => {
   return dispatch => {
-    blogService.onLogin(user).then(resp => {
-      if (!resp.errors) {
-        dispatch(setUser(resp.user))
-      } else {
-        dispatch(setErrors(resp.errors))
-      }
-    })
+    blogService.onLogin(user)
+      .then(resp => {
+        if (!resp.errors) {
+          dispatch(setUser(resp.user))
+        } else {
+          dispatch(setErrors(resp.errors))
+        }
+      })
   }
 }

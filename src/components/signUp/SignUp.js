@@ -6,34 +6,53 @@ import { useState } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/actions';
+import { useForm } from 'react-hook-form' 
+import { validation } from '../../validation/validation'
 
 const { signUp, title, form, agreeLabel, agreeText, checkbox } = css
 
 const SignUp = props => {
-    const [user, setUser] = useState({})
+    const { register, handleSubmit, formState: {errors} } = useForm()
 
-    const onFormChange = (value, text) => {
-        setUser({...user, [value]: text})
-    }
-
-    const onFormSubmit = (event) => {
-        event.preventDefault()
-        props.onRegister(user)
+    const onFormSubmit = (data) => {
+        console.log(data)
+        props.onRegister(data)
     }
 
     return (
         <div className={signUp}>
             <div className={title}>Create new account</div>
-            <form className={form} onSubmit={onFormSubmit}>
-                <InputField onChange={event => onFormChange(event.target.name, event.target.value)} name="username" text="Username" />
-                <InputField onChange={event => onFormChange(event.target.name, event.target.value)} name="email" text="Email address" />
-                <InputField onChange={event => onFormChange(event.target.name, event.target.value)} name="password" text="Password" error={true}/>
-                <InputField text="Repeat Password" error={true}/>
+            <form className={form} onSubmit={handleSubmit(onFormSubmit)}>
+                <InputField
+                    name="username" 
+                    text="Username"
+                    register={register('username', {...validation.username})}
+                    error={errors.username} />
+                <InputField 
+                    name="email"
+                    type="email"
+                    text="Email address"
+                    register={register('email', {...validation.email})}
+                    error={errors.email} />
+                <InputField 
+                    name="password" 
+                    text="Password"
+                    type="password"
+                    register={register('password', {...validation.password})}
+                    error={errors.password} />
+                <InputField 
+                    text="Repeat Password"
+                    type="password"
+                    error={errors.password} />
                 <label className={agreeLabel}>
-                    <input className={checkbox} type="checkbox" />
+                    <input 
+                        className={checkbox}
+                        type="checkbox"
+                        register={register('checkbox', {...validation.checkbox})} />
                     <div className={agreeText}>I agree to the processing of my personal 
                     information</div>
                 </label>
+
                 <BlueBtn text="Create"/>
             </form>
             <Suggest text="Already have an account?" linkText="Sign In" link="sign-in"/>

@@ -1,7 +1,8 @@
 const initialState = {
     page: 1,
     articles: [],
-    user: null
+    user: null,
+    errors: {}
 };
   
 const reducer = (state = initialState, action) => {
@@ -13,11 +14,17 @@ const reducer = (state = initialState, action) => {
         case 'CHANGE_PAGE':
             return {...state, page: action.page}
         case 'SET_USER':
-            return {...state, user: action.user, logged: true}
+            return {...state, user: action.user, logged: true, token: action.user.token}
         case 'SET_ERRORS':
             return {...state, errors: action.errors }
         case 'SET_SLUG':
             return {...state, slug: action.currentSlug}
+        case 'LOGOUT': {
+            return {...state, user: "", logged: false}
+        }
+        case 'ON_CLOSE_ERROR': {
+            return {...state, errors: null}
+        }
         default:
             return state;
     }

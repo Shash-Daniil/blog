@@ -11,7 +11,8 @@ body {
 }
 
 .blohLogo {
-
+    font-size: 18px;
+    color: #000000;
 }
 
 .header {
@@ -32,6 +33,7 @@ body {
 }
 
 .main {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -55,9 +57,7 @@ body {
 
 .mainHeader {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    width: 215px;
 }
 
 .postTitle {
@@ -68,6 +68,7 @@ body {
 .likes {
     display: flex;
     align-items: center;
+    margin-left: 15px;
 }
 
 .postContentText {
@@ -117,5 +118,16 @@ body {
 }
 
 .postDescription {
+    color: rgba(0, 0, 0, 0.5);
+}
 
+.post_opened {
+    min-height: 800px;
+}
+
+.errorsContainer {
+    right: 10px;
+    bottom: 10px;
+    position: fixed;
+    width: 300px;
 }

@@ -1,5 +1,4 @@
 import css from './App.module.css';
-import Post from './components/post/Post'
 import Posts from './components/posts/Posts'
 import SignUp from './components/signUp/SignUp'
 import SignIn from './components/signIn/SignIn'
@@ -12,11 +11,11 @@ import { useEffect } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from './actions/actions';
-import { Pagination } from 'antd';
+import { Pagination, Alert } from 'antd';
 import '../node_modules/antd/dist/antd.css';
-import avatarImg from './img/avatar.png'
+import HeaderMenu from './components/headerMenu/HeaderMenu'
 
-const { blohLogo, header, headerMenu, main, userInfo, userInfo__name, headerMenuWrapper } = css
+const { blohLogo, header, headerMenu, main, errorsContainer } = css
 
 function App(props) {
 
@@ -30,38 +29,19 @@ function App(props) {
       props.onLogin(JSON.parse(localStorage.getItem("user")))
   }, [])
 
-  let logged
-
-  if (props.state.logged) {
-    logged = <div className={headerMenuWrapper}>
-      <Link to="/">
-        <Btn border color="#52C41A" text="Create article" fontSize="14px"/>
-      </Link>
-      <div className={userInfo}>
-        <div className={userInfo__name}>{props.state.user.username}</div>
-        <img src={props.state.user.image} srcSet={avatarImg} />
-      </div>
-      <Link to="/">
-        <Btn border color="#000000" text="Log Out" fontSize="18px"/>
-      </Link>
-    </div>
-  }
-
-  const notLogged = <div className={headerMenuWrapper}>
-    <Link to="/sign-in">
-      <Btn text="Sign In" fontSize="14px"/>
-    </Link>
-    <Link to="/sign-up">
-      <Btn text="Sign Up" color="#52C41A" border fontSize="14px"/>
-    </Link>
-  </div>
-
   return (
     <div className="App">
       <header className={header}>
-        <div className={blohLogo}>Realworld blog</div>
+        <Link to="/">
+          <div className={blohLogo}>
+            Realworld blog
+          </div>
+        </Link>
         <div className={headerMenu}>
-          {props.state.logged ? logged : notLogged}
+          <HeaderMenu
+            user={props.state.user}
+            onLogOut={props.onLogOut}
+            logged={props.state.logged}/>
         </div>
       </header>
       <main className={main}>
@@ -74,8 +54,20 @@ function App(props) {
         <Route path='/sign-in' component={SignIn} />
         <Route path='/sign-up' component={SignUp} />
         <Route path='/article/:slug' component={OpenedPost} />
-        
+        <Route path='/profile' component={EditProfile} />
+        <Route path='/new-article' component={CreatePost} />
+        <div className={errorsContainer}>
+          {props.state.errors ? 
+            Object.keys(props.state.errors).map(elem => {
+              return <Alert message={elem}
+              closable
+              afterClose={props.closeErrors}
+              description={props.state.errors[elem][0]} type="error" showIcon />
+            })
+            : null}
+        </div>
       </main>
+      
       <svg style={{display: "none"}}>
                 <symbol viewBox="0 0 412.735 412.735" id="heart">
                     <g>
@@ -105,12 +97,14 @@ function App(props) {
 const mapStateToProps = (state) => ({ state });
 
 const mapDispatchToProps = (dispatch) => {
-  const { getArticles, changePage, onLogin } = bindActionCreators(actions, dispatch);
+  const { getArticles, changePage, onLogin, onLogOut, closeErrors } = bindActionCreators(actions, dispatch);
 
   return {
     getArticles,
     changePage,
-    onLogin
+    onLogin,
+    onLogOut,
+    closeErrors
   };
 };
 

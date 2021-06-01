@@ -49,7 +49,23 @@ export default class BlogService extends React.Component {
             localStorage.setItem("user", JSON.stringify(user))
 
         response = await response.json()
-        console.log(response)
+        return response
+    }
+
+    async onUpdateUser (user, token) {
+        let response = await fetch(`${this._apiBase}/user`,
+        {   method: "PUT",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify( {user: user} )
+        })
+
+        if (response.ok)
+            localStorage.setItem("user", JSON.stringify(user))
+
+        response = await response.json()
         return response
     }
 }   

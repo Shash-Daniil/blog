@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown'
 import css from '../../App.module.css';
-import avatarImg from '../../img/avatar.png'
 import Heart from '../Heart/Heart'
 import Tag from '../Tag/Tag'
 import { getOpenedArticle, receiveOpenedArticle } from '../../actions/actions';
@@ -9,7 +8,7 @@ import { connect } from 'react-redux';
 import { Avatar } from 'antd';
 import format from 'date-fns/format'
 
-const { post, postMain, mainHeader, postTitle, likes, tags, postContentText,
+const { post, post_opened, postMain, mainHeader, postTitle, likes, tags, postContentText,
    postInfo, name, postDate, avatar, dopInfo, postDescription } = css
 
 const OpenedPost = props => {
@@ -28,7 +27,7 @@ const OpenedPost = props => {
     const { title, description, body, tagList, favorited, favoritesCount, author, createdAt } = article
 
     return (
-        <article className={post}>
+        <article className={[post, post_opened].join(" ")}>
             <div className={postMain}>
                 <div className={mainHeader}>
                     <div className={postTitle}>{title}</div>
@@ -42,7 +41,9 @@ const OpenedPost = props => {
                 </div>
                 <div className={postDescription}>{description}</div>
                 <div className={postContentText}>
-                    {body}
+                    <ReactMarkdown>
+                        {body}
+                    </ReactMarkdown>
                 </div>
             </div>
             <div className={postInfo}>
