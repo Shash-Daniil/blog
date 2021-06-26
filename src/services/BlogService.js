@@ -52,7 +52,7 @@ export default class BlogService extends React.Component {
         return response
     }
 
-    async onUpdateUser (user, token) {
+    async onUpdateUser(user, token) {
         let response = await fetch(`${this._apiBase}/user`,
         {   method: "PUT",
             headers: {
@@ -67,5 +67,30 @@ export default class BlogService extends React.Component {
 
         response = await response.json()
         return response
+    }
+
+    async createArticle(article, token) {
+        let response = await fetch(`${this._apiBase}/articles`,
+        {   method: "POST",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify( {article: article} )
+        })
+        response = await response.json()
+        return response
+    }
+
+    async deleteArticle(slug, token) {
+        let response = await fetch(`${this._apiBase}/articles/${slug}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: `Token ${token}`,
+            }
+        })
+        response = await response.json()
+        console.log(response)
     }
 }   

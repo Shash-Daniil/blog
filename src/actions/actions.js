@@ -47,7 +47,13 @@ export const onRegister = (user) => {
 export const updateUser = (data, token) => {
   return dispatch => {
     blogService.onUpdateUser(data, token)
-      .then(user => dispatch(setUser(user)))
+      .then(resp => {
+        if (!resp.errors) {
+          dispatch(setUser(resp.user))
+        } else {
+          dispatch(setErrors(resp.errors))
+        }
+      })
   }
 }
 
@@ -61,5 +67,23 @@ export const onLogin = (user) => {
           dispatch(setErrors(resp.errors))
         }
       })
+  }
+}
+
+export const createArticle = (article, token) => {
+  return dispatch => {
+    blogService.createArticle(article, token)
+      .then(resp => {
+        if (resp.errors) {
+          dispatch(setErrors(resp.errors))
+        }
+      })
+  }
+}
+
+export const deleteArticle = (slug, token) => {
+  return dispatch => {
+    console.log('action activated')
+    blogService.deleteArticle(slug, token)
   }
 }

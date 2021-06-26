@@ -5,17 +5,18 @@ const { inputWrapper, inputTitle, inputField, inputError } = css
 
 const InputField = props => {
 
-    const { name, onChange, error, type, placeholder, text, register } = props
+    const { name, error, type, placeholder, text, register, rows } = props
     
     return (
         <div className={inputWrapper}>
             <div style={{display: text ? 'block' : 'none'}} className={inputTitle}>{text}</div>
             <input 
                 name={name}
-                onChange={onChange} 
                 className={[inputField, error ? inputError : null].join(' ')} 
                 type={type ? type : "text"}
                 placeholder={!placeholder ? text : placeholder}
+                value={props.value}
+                defaultValue={props.defaultValue}
                 {...register} />
             {error ? <Error text={error.message}/> : null}
         </div>

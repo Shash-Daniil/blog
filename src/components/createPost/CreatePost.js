@@ -1,41 +1,34 @@
-import css from './CreatePost.module.css'
-import InputField from '../inputField/InputField'
-import BlueBtn from '../blueBtn/BlueBtn'
-import Btn from '../btn/Btn'
-import { useState } from 'react'
+import TemplateCreatePost from '../templateCreatePost/TemplateCreatePost'
+import { connect } from 'react-redux'
+import { createArticle } from '../../actions/actions'
 
-const { title, createPost, form, tagsWrapper, byda, container } = css
 
 const CreatePost = props => {
-    const [tags, setTags] = useState()
+
+    const defaultValue = {
+        tagList: ['']
+    }
+
+    const onFormSubmit = (data) => {
+        console.log(data)
+        props.createArticle(data, props.token)
+    }
 
     return (
-        <div className={createPost}>
-            <div className={title}>Create new article</div>
-            <form className={form}>
-                <InputField text="Title" />
-                <InputField text="Short description" />
-                <InputField text="Text" />
-                <div className={tagsWrapper}>
-                    <div>Tags</div>
-                    <div className={byda}>
-                        <div className={container}>
-                            <InputField placeholder="Tag" />
-                        </div>
-                        <Btn text="Delete" color="red" border fontSize="16px"/>
-                    </div>
-                    <div className={byda}>
-                        <div className={container}>
-                            <InputField placeholder="Tag" />
-                        </div>
-                        <Btn text="Delete" color="red" border fontSize="16px"/>
-                        <Btn text="Add tag" color="#1890FF" border fontSize="16px"/>
-                    </div>
-                </div>
-                <BlueBtn text="Send"/>
-            </form>
-        </div>
+        <TemplateCreatePost onFormSubmit={onFormSubmit} title='' text='' description='' defaultValue={defaultValue} formTitle="Create new article"/>
     )
 }
 
-export default CreatePost
+const mapStateToProps = (state) => {
+    return {
+        token: state.token
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createArticle: (article, token) => dispatch(createArticle(article, token))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePost)
