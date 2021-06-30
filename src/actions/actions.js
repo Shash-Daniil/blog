@@ -3,20 +3,30 @@ import BlogService from '../services/BlogService'
 const blogService = new BlogService()
 
 
-export const receiveArticles = (articles) => ({ type: 'RECEIVE_ARTICLES', articles, loading: false })
+export const receiveArticles = (articles) => ({ type: 'RECEIVE_ARTICLES', articles })
 
 export const receiveOpenedArticle = (article) => ({ type: 'RECEIVE_OPENED_ARTICLE', article })
 
-export const changePage = (page) => ({ type: 'CHANGE_PAGE', page, loading: true })
+export const changePage = (page) => ({ type: 'CHANGE_PAGE', page })
 
-export const setUser = (user) => ({ type: 'SET_USER', user })
+export const receiveUser = (user) => ({ type: 'SET_USER', user })
+
+export const setUser = (user) => dispatch => {
+  dispatch(receiveUser(user))
+  localStorage.setItem('token', user.token)
+}
 
 export const closeErrors = () => ({ type: 'ON_CLOSE_ERROR', errors: null })
 
 export const setErrors = (errors) => ({ type: 'SET_ERRORS', errors })
 
+const setLoading = (status) => ({type: 'SET_LOADING', loading: status})
+
+const successLiked = (slug, article) => ({type: 'LIKE', slug, article})
+
 export const onLogOut = () => {
   localStorage.removeItem("user")
+  localStorage.removeItem("token")
   return ({ type: 'LOGOUT' })
 } 
 
@@ -24,29 +34,22 @@ export const setSlug = (currentSlug) => ({ type: 'SET_SLUG', currentSlug })
 /* АСИНХРОННЫЕ ЭКШЕНЫ */
 
 // eslint-disable-next-line arrow-body-style
-export const getArticles = (offset) => {
-  return (dispatch) => {
+export const getArticles = (offset) => (dispatch) => {
+    dispatch(setLoading(true))
     blogService.getArticles(offset)
       .then(resp => dispatch(receiveArticles(resp)))
+      .then(() => dispatch(setLoading(false)))
   }
-}
 
-export const getOpenedArticle = (slug) => {
-  return (dispatch) => {
+export const getOpenedArticle = (slug) => (dispatch) => {
+    dispatch(setLoading(true))
     blogService.getOpenedArticle(slug)
       .then(resp => dispatch(receiveOpenedArticle(resp)))
+      .then(() => dispatch(setLoading(false)))
   }
-}
 
-export const onRegister = (user) => {
-  return dispatch => {
+export const onRegister = (user) => dispatch => {
     blogService.onRegister(user)
-  }
-}
-
-export const updateUser = (data, token) => {
-  return dispatch => {
-    blogService.onUpdateUser(data, token)
       .then(resp => {
         if (!resp.errors) {
           dispatch(setUser(resp.user))
@@ -55,10 +58,19 @@ export const updateUser = (data, token) => {
         }
       })
   }
-}
 
-export const onLogin = (user) => {
-  return dispatch => {
+export const updateUser = (data) => dispatch => {
+    blogService.onUpdateUser(data)
+      .then(resp => {
+        if (!resp.errors) {
+          dispatch(setUser(resp.user))
+        } else {
+          dispatch(setErrors(resp.errors))
+        }
+      })
+  }
+
+export const onLogin = (user) => dispatch => {
     blogService.onLogin(user)
       .then(resp => {
         if (!resp.errors) {
@@ -68,22 +80,36 @@ export const onLogin = (user) => {
         }
       })
   }
-}
 
-export const createArticle = (article, token) => {
-  return dispatch => {
-    blogService.createArticle(article, token)
+export const createArticle = (article) => dispatch => {
+    dispatch(setLoading(true))
+    blogService.createArticle(article)
       .then(resp => {
         if (resp.errors) {
           dispatch(setErrors(resp.errors))
         }
       })
+      .then(() => dispatch(getArticles(0)))
   }
-}
 
-export const deleteArticle = (slug, token) => {
-  return dispatch => {
-    console.log('action activated')
-    blogService.deleteArticle(slug, token)
+export const editArticle = (slug, article) => dispatch => {
+    dispatch(setLoading(true))
+    blogService.editArticle(slug, article)
+      .then(() => dispatch(getArticles(0)))
   }
-}
+
+export const deleteArticle = (slug) => dispatch => {
+    dispatch(setLoading(true))
+    blogService.deleteArticle(slug)
+      .then(() => dispatch(getArticles(0)))
+  }
+
+export const likePost = (slug) => dispatch => {
+    blogService.likePost(slug)
+      .then((article) => dispatch(successLiked(slug, article)))
+  }
+
+export const unlikePost = (slug) => dispatch => {
+    blogService.unlikePost(slug)
+      .then((article) => dispatch(successLiked(slug, article)))
+  }

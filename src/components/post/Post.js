@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import css from '../../App.module.css';
 import Heart from '../Heart/Heart'
 import Tag from '../Tag/Tag'
-import { setSlug } from '../../actions/actions';
+import { setSlug, likePost, unlikePost } from '../../actions/actions';
 import { connect } from 'react-redux';
 import { Avatar } from 'antd';
 import format from 'date-fns/format'
@@ -11,7 +11,17 @@ const { post, postMain, mainHeader, postTitle, likes, tags, postContentText,
    postInfo, name, postDate, avatar, dopInfo } = css
 
 const Post = props => {
-  const { title, description, slug, setSlug, tagList, favorited, favoritesCount, author, createdAt } = props
+  const { article, setSlug, likePost, unlikePost } = props
+
+  const { title, description, slug, tagList, favorited, favoritesCount, author, createdAt } = article
+
+  const onHeartClick = () => {
+    if (favorited) {
+      unlikePost(slug)
+    } else {
+      likePost(slug)
+    }
+  }
 
   return (
       <article className={post}>
@@ -21,7 +31,7 @@ const Post = props => {
               {title}
             </Link>
             <div className={likes}>
-              <Heart liked={favorited}/>
+              <Heart onClick={onHeartClick} liked={favorited}/>
               <div>{favoritesCount}</div>
             </div>
           </div>
@@ -46,7 +56,9 @@ const Post = props => {
 const mapStateToProps = (state) => ({ state })
 
 const mapDispatchToProps = (dispatch) => ({
-  setSlug: (slug) => dispatch(setSlug(slug))
+  setSlug: (slug) => dispatch(setSlug(slug)),
+  likePost: (slug) => dispatch(likePost(slug)),
+  unlikePost: (slug) => dispatch(unlikePost(slug))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);

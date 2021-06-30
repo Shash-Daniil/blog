@@ -1,21 +1,26 @@
 import Post from '../post/Post'
+import { connect } from 'react-redux';
+import { Spin } from 'antd';
 
 const Posts = props => {
+    const { articles, loading } = props
+
+    const articlesList = articles.map(article => <Post article={article} key={article.slug}/>)
 
     return (
         <div>
-            {props.articles.map(article => <Post getOpenedArticle={props.getOpenedArticle}
-                                                title={article.title}
-                                                description={article.description}
-                                                slug={article.slug}
-                                                tagList={article.tagList}
-                                                favorited={article.favorited}
-                                                favoritesCount={article.favoritesCount}
-                                                author={article.author}
-                                                createdAt={article.createdAt}
-                                                />)}
+            {loading ? <Spin /> : articlesList}
         </div>
     )
 }
 
-export default Posts
+const mapStateToProps = (state) => ({
+    articles: state.articles,
+    loading: state.loading
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Posts);

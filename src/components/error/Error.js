@@ -1,11 +1,19 @@
+import React from 'react'
+import PropTypes from 'prop-types';
 import css from './Error.module.css';
 
 const { errorText } = css
 
 const Error = props => {
+    const { text } = props
+
     return (
-        <div className={errorText}>{props.text}</div>
+        <div className={errorText}>{text}</div>
     )
+}
+
+Error.propTypes = {
+    text: PropTypes.string.isRequired
 }
 
 export default Error

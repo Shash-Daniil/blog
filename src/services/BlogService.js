@@ -5,7 +5,12 @@ export default class BlogService extends React.Component {
     _apiBase = 'https://conduit.productionready.io/api'
 
     async getSrc (url) {
-        const res = await fetch(`${this._apiBase}${url}`)
+        const res = await fetch(`${this._apiBase}${url}`, {
+            method: 'GET',
+            headers: {
+                Authorization: (localStorage.getItem('token') ? `Token ${localStorage.getItem('token')}` : '')
+            }
+        })
         return res.json()
     }
 
@@ -52,12 +57,12 @@ export default class BlogService extends React.Component {
         return response
     }
 
-    async onUpdateUser(user, token) {
+    async onUpdateUser(user) {
         let response = await fetch(`${this._apiBase}/user`,
         {   method: "PUT",
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
-                Authorization: `Token ${token}`,
+                Authorization: `Token ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify( {user: user} )
         })
@@ -69,12 +74,12 @@ export default class BlogService extends React.Component {
         return response
     }
 
-    async createArticle(article, token) {
+    async createArticle(article) {
         let response = await fetch(`${this._apiBase}/articles`,
         {   method: "POST",
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
-                Authorization: `Token ${token}`,
+                Authorization: `Token ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify( {article: article} )
         })
@@ -82,15 +87,50 @@ export default class BlogService extends React.Component {
         return response
     }
 
-    async deleteArticle(slug, token) {
+    async deleteArticle(slug) {
         let response = await fetch(`${this._apiBase}/articles/${slug}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
-                Authorization: `Token ${token}`,
+                Authorization: `Token ${localStorage.getItem('token')}`,
+            }
+        })
+    }
+
+    async editArticle(slug, article) {
+        let response = await fetch(`${this._apiBase}/articles/${slug}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: `Token ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify( {article: article} )
+        })
+        response = await response.json()
+        return response
+    }
+
+    async likePost(slug) {
+        let response = await fetch(`${this._apiBase}/articles/${slug}/favorite`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: `Token ${localStorage.getItem('token')}`,
             }
         })
         response = await response.json()
-        console.log(response)
+        return response
     }
+
+    async unlikePost(slug) {
+        let response = await fetch(`${this._apiBase}/articles/${slug}/favorite`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: `Token ${localStorage.getItem('token')}`,
+            }
+        })
+        response = await response.json()
+        return response
+    } 
 }   

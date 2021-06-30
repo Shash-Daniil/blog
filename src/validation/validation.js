@@ -42,5 +42,23 @@ export const validation = {
             value: true,
             message: "agree!"
         }
+    },
+    title: {
+        required: {
+            value: true,
+            message: "Can't be empty."
+        }
+    },
+    description: {
+        required: {
+            value: true,
+            message: "Can't be empty."
+        }
+    },
+    body: {
+        required: {
+            value: true,
+            message: "Can't be empty."
+        }
     }
 }

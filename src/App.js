@@ -1,33 +1,37 @@
-import css from './App.module.css';
-import Posts from './components/posts/Posts'
-import SignUp from './components/signUp/SignUp'
-import SignIn from './components/signIn/SignIn'
+import 'antd/dist/antd.css';
+import { Route, Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Pagination, Alert } from 'antd';
+import PropTypes from 'prop-types';
+import * as actions from './actions/actions';
 import EditProfile from './components/editProfile/EditProfile'
 import CreatePost from './components/createPost/CreatePost'
 import OpenedPost from './components/openedPost/OpenedPost' 
-import Btn from './components/btn/Btn'
-import { Route, Link } from 'react-router-dom'
-import { useEffect } from 'react'
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from './actions/actions';
-import { Pagination, Alert } from 'antd';
-import '../node_modules/antd/dist/antd.css';
+import EditPost from './components/editPost/EditPost'
+import Posts from './components/posts/Posts'
+import SignUp from './components/signUp/SignUp'
+import SignIn from './components/signIn/SignIn'
 import HeaderMenu from './components/headerMenu/HeaderMenu'
+import css from './App.module.css';
 
 const { blohLogo, header, headerMenu, main, errorsContainer } = css
 
 function App(props) {
 
-  useEffect(() => {
-    const offset = (props.state.page - 1) * 20
-    props.getArticles(offset)
-  }, [props.state.page])
+  const { closeErrors, onLogOut, onLogin, getArticles, state } = props
 
   useEffect(() => {
-    if (localStorage.user)
-      props.onLogin(JSON.parse(localStorage.getItem("user")))
-  }, [])
+    const offset = (state.page - 1) * 20
+    getArticles(offset)
+  }, [state.page, getArticles])
+
+  useEffect(() => {
+    if (localStorage.user) {
+      onLogin(JSON.parse(localStorage.getItem("user")))
+    }
+  }, [onLogin])
 
   return (
     <div className="App">
@@ -39,13 +43,13 @@ function App(props) {
         </Link>
         <div className={headerMenu}>
           <HeaderMenu
-            user={props.state.user}
-            onLogOut={props.onLogOut}
-            logged={props.state.logged}/>
+            user={state.user}
+            onLogOut={onLogOut}
+            logged={state.logged}/>
         </div>
       </header>
       <main className={main}>
-        <Route path={['/','/articles']} exact render={() => <Posts articles={props.state.articles}/>} />
+        <Route path={['/','/articles']} exact render={() => <Posts />} />
         <Route path={['/','/articles']} exact render={() => <Pagination style={{marginTop: '20px'}}
                                                                         onChange={(event) => props.changePage(event)} 
                                                                         defaultCurrent={1} 
@@ -53,17 +57,16 @@ function App(props) {
                                                                         showSizeChanger={false} />} />
         <Route path='/sign-in' component={SignIn} />
         <Route path='/sign-up' component={SignUp} />
-        <Route path='/article/:slug' component={OpenedPost} />
+        <Route path='/article/:slug' exact component={OpenedPost} />
         <Route path='/profile' component={EditProfile} />
         <Route path='/new-article' component={CreatePost} />
+        <Route path='/article/edit-article' component={EditPost}/>
         <div className={errorsContainer}>
-          {props.state.errors ? 
-            Object.keys(props.state.errors).map(elem => {
-              return <Alert message={elem}
+          {state.errors ? 
+            Object.keys(state.errors).map(elem => <Alert message={elem}
               closable
-              afterClose={props.closeErrors}
-              description={props.state.errors[elem][0]} type="error" showIcon />
-            })
+              afterClose={closeErrors}
+              description={state.errors[elem][0]} type="error" showIcon />)
             : null}
         </div>
       </main>
@@ -92,6 +95,15 @@ function App(props) {
             </svg>
     </div>
   );
+}
+
+App.propTypes = {
+  state: PropTypes.instanceOf(Object).isRequired,
+  getArticles: PropTypes.func.isRequired,
+  changePage: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
+  onLogOut: PropTypes.func.isRequired,
+  closeErrors: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({ state });

@@ -1,22 +1,32 @@
-import css from './EditProfile.module.css'
-import InputField from '../inputField/InputField'
-import BlueBtn from '../blueBtn/BlueBtn'
-import { updateUser } from '../../actions/actions'
 import { connect } from 'react-redux'
 import { useForm } from 'react-hook-form' 
+import { useHistory } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import PropTypes from 'prop-types';
 import { validation } from '../../validation/validation'
+import { updateUser } from '../../actions/actions'
+import InputField from '../inputField/InputField'
+import BlueBtn from '../blueBtn/BlueBtn'
+import css from './EditProfile.module.css'
 
 const { title, editProfile, form } = css
 
 const EditProfile = props => {
-    const { updateUser, state } = props
+    const { updateUser, user } = props
 
+    const history = useHistory()
+    
     const { register, handleSubmit, formState: {errors} } = useForm()
 
     const onFormSubmit = (data) => {
-        console.log(data)
-        updateUser(data, state.token)
+        updateUser(data)
     }
+
+    const lastUpdate = localStorage.getItem('')
+
+    useEffect(() => {
+        history.push('/')
+    }, [user])
 
     return (
         <div className={editProfile}>
@@ -51,14 +61,13 @@ const EditProfile = props => {
     )
 }
 
-const mapStateToProps = (state) => {
-    return {state}
+EditProfile.propTypes = {
+    user: PropTypes.instanceOf(Object).isRequired,
+    updateUser: PropTypes.func.isRequired
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateUser: (data, token) => dispatch(updateUser(data, token))
-    }
-}
+const mapStateToProps = (state) => ({ user: state.user })
+
+const mapDispatchToProps = (dispatch) => ({ updateUser: data => dispatch(updateUser(data)) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile)

@@ -1,34 +1,32 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import format from 'date-fns/format'
+import { Spin, Avatar, Popconfirm } from 'antd';
 import ReactMarkdown from 'react-markdown'
-import css from '../../App.module.css';
 import Heart from '../Heart/Heart'
 import Tag from '../Tag/Tag'
 import Btn from '../btn/Btn'
 import { getOpenedArticle, receiveOpenedArticle, deleteArticle } from '../../actions/actions';
-import { connect } from 'react-redux';
-import { Avatar, Popconfirm } from 'antd';
-import format from 'date-fns/format'
+import css from '../../App.module.css';
 
-const { post, post_opened, postMain, postInfoHeader, postTitle, likes, tags, postContentText, 
+const { post, post_opened, postInfoHeader, postTitle, likes, tags, 
     name, postDate, avatar, dopInfo, postDescription, userInfo, postInfo, postInfo1, postInfo2, postBody, postActions } = css
 
 const OpenedPost = props => {
-    const { slug, getOpenedArticle, article = {}, receiveOpenedArticle, token, deleteArticle, user } = props
+    const { slug, getOpenedArticle, article = {}, receiveOpenedArticle, token, deleteArticle, user, loading } = props
 
     const confirm = () => {
         deleteArticle(slug, token)
-        console.log('deleted')
     }
 
     useEffect(() => {
         getOpenedArticle(slug)
-        return () => {
-            receiveOpenedArticle({})
-        }
     }, [slug])
 
-    if (JSON.stringify(article).length === 2)
-        return <div>loading</div>
+    if (JSON.stringify(article).length === 2 || loading)
+        return <Spin />
 
     const { title, description, body, tagList, favorited, favoritesCount, author, createdAt } = article
 
@@ -66,7 +64,9 @@ const OpenedPost = props => {
                             cancelText="No">
                                 <Btn text="Delete" color="red" border fontSize="14px"/>
                         </Popconfirm>
-                        <Btn text="Edit" color="#52C41A" border fontSize="14px"/>
+                        <Link to={`/article/edit-article/${slug}`}>
+                            <Btn text="Edit" color="#52C41A" border fontSize="14px"/>
+                        </Link>
                     </div> : ''}
                 </div>
             </div>
@@ -81,7 +81,8 @@ const mapStateToProps = (state) => ({
     slug: state.slug,
     article: state.article,
     token: state.token,
-    user: state.user
+    user: state.user,
+    loading: state.loading
 });
 
 const mapDispatchToProps = (dispatch) => ({

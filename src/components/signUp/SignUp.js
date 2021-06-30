@@ -2,22 +2,41 @@ import css from './SignUp.module.css';
 import InputField from '../inputField/InputField'
 import BlueBtn from '../blueBtn/BlueBtn'
 import Suggest from '../suggest/Suggest'
-import { useState } from 'react'
+import Error from '../error/Error'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/actions';
 import { useForm } from 'react-hook-form' 
 import { validation } from '../../validation/validation'
+import { useHistory } from 'react-router-dom'
+import { useEffect } from 'react';
 
 const { signUp, title, form, agreeLabel, agreeText, checkbox } = css
 
 const SignUp = props => {
-    const { register, handleSubmit, formState: {errors} } = useForm()
+    const { watch, register, handleSubmit, formState: {errors} } = useForm()
+
+    const { user } = props
+
+    const history = useHistory()
 
     const onFormSubmit = (data) => {
-        console.log(data)
-        props.onRegister(data)
+        const { username, email, password } = data
+        const user = {
+            username,
+            email,
+            password
+        }
+        props.onRegister(user)
     }
+
+    useEffect(() => {
+        if (user) {
+            history.push('/')
+        }
+    }, [user])
+
+    const currentPassword = watch('password')
 
     return (
         <div className={signUp}>
@@ -43,14 +62,16 @@ const SignUp = props => {
                 <InputField 
                     text="Repeat Password"
                     type="password"
-                    error={errors.password} />
+                    error={errors.repeatPassword}
+                    register={register('repeatPassword', {validate: value => value === currentPassword})} />
                 <label className={agreeLabel}>
                     <input 
                         className={checkbox}
                         type="checkbox"
-                        register={register('checkbox', {...validation.checkbox})} />
+                        {...register('checkbox', {...validation.checkbox})}/>
                     <div className={agreeText}>I agree to the processing of my personal 
                     information</div>
+                    {errors.checkbox ? <Error text={errors.checkbox.message}/> : null}
                 </label>
 
                 <BlueBtn text="Create"/>
@@ -60,7 +81,9 @@ const SignUp = props => {
     )
 }
 
-const mapStateToProps = (state) => ({ state });
+const mapStateToProps = (state) => ({ 
+    user: state.user
+ });
 
 const mapDispatchToProps = (dispatch) => {
     const { onRegister } = bindActionCreators(actions, dispatch);
