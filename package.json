@@ -24,12 +24,28 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --debug src/",
+    "lint:fix": "eslint src/ --fix --color",
+    "prettier": "prettier --write src/**/*.{js,jsx}",
+    "format": "node scripts/eject.js"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "npm run lint:fix",
+      "npm run prettier",
+      "git add"
     ]
   },
   "browserslist": {
