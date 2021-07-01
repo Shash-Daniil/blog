@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import reduxThunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
-import reducer from './reducers/reducer';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
+import reducer from './reducers/reducer';
+import App from './App';
 
 const composeEnhancers =
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -19,6 +19,7 @@ ReactDOM.render(
     <Router>
       <App />
     </Router>
-  </Provider>
-  
-  , document.getElementById('root'));
+  </Provider>,
+
+  document.getElementById('root')
+);

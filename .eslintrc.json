@@ -12,6 +12,9 @@
     "jest": true
   },
   "rules": {
+  	"no-alert": "off",
+  	"react-hooks/exhaustive-deps": "off",
+  	"no-shadow": "off",
     "curly": ["error"],
     "max-depth": ["warn", 4],
     "id-length": ["warn", { "exceptions": ["i", "j"], "min": 2 }],

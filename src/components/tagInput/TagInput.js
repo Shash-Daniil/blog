@@ -1,25 +1,32 @@
-import css from './TagInput.module.css'
-import InputField from '../inputField/InputField'
-import Btn from '../btn/Btn'
+import React from 'react';
+import PropTypes from 'prop-types';
+import InputField from '../inputField/InputField';
+import Btn from '../btn/Btn';
+import css from './TagInput.module.css';
 
-const { byda, container } = css
+const { byda, container } = css;
 
-const TagInput = props => {
+const TagInput = (props) => {
+  const { register, value, append, remove, aloneTag, last } = props;
 
-    const { register, value, append, remove } = props
+  return (
+    <div className={byda}>
+      <div className={container}>
+        <InputField defaultValue={value} placeholder="tag" register={register} />
+      </div>
+      {aloneTag ? null : <Btn onClick={remove} text="Delete" color="red" border fontSize="16px" />}
+      {last ? <Btn onClick={append} text="Add tag" color="#1890FF" border fontSize="16px" /> : null}
+    </div>
+  );
+};
 
-    return (
-        <div className={byda}>
-            <div className={container}>
-                <InputField
-                    defaultValue={value}
-                    placeholder="tag"
-                    register={register}/>
-            </div>
-            {props.aloneTag ? null : <Btn onClick={remove} text="Delete" color="red" border fontSize="16px"/>}
-            {props.last ? <Btn onClick={append} text="Add tag" color="#1890FF" border fontSize="16px"/> : null}
-        </div>
-    )
-}
+TagInput.propTypes = {
+  register: PropTypes.instanceOf(Object).isRequired,
+  value: PropTypes.string.isRequired,
+  append: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired,
+  aloneTag: PropTypes.bool.isRequired,
+  last: PropTypes.bool.isRequired,
+};
 
-export default TagInput
+export default TagInput;

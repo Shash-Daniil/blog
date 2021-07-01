@@ -138,7 +138,7 @@ input:not(input[type="checkbox"]), textarea {
     color: rgba(0, 0, 0, 0.5);
 }
 
-.post_opened {
+.postOpened {
     min-height: 800px;
     flex-direction: column;
     justify-content: flex-start;
