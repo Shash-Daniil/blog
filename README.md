@@ -1,2 +1,1 @@
-# blog
-lol
+# https://blog-beta-inky.vercel.app/
