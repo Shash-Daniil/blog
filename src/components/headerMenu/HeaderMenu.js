@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import Btn from '../btn/Btn';
-import css from '../../App.module.css';
+import css from './HeaderMenu.module.css';
 
 const { userInfo, userInfoName, headerMenuWrapper, avatar } = css;
 

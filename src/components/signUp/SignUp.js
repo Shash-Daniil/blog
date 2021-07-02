@@ -9,7 +9,7 @@ import BlueBtn from '../blueBtn/BlueBtn';
 import Suggest from '../suggest/Suggest';
 import Error from '../error/Error';
 import validation from '../../validation/validation';
-import * as actions from '../../actions/actions';
+import * as actions from '../../redux/actions/actions';
 import css from './SignUp.module.css';
 
 const { signUp, title, form, agreeLabel, agreeText, checkbox } = css;
@@ -93,7 +93,7 @@ SignUp.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  logged: state.logged,
+  logged: state.userReducer.logged,
 });
 
 const mapDispatchToProps = (dispatch) => {

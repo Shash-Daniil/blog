@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import format from 'date-fns/format';
@@ -8,8 +8,8 @@ import ReactMarkdown from 'react-markdown';
 import Heart from '../Heart/Heart';
 import Tag from '../Tag/Tag';
 import Btn from '../btn/Btn';
-import { getOpenedArticle, deleteArticle, likePost, unlikePost } from '../../actions/actions';
-import css from '../../App.module.css';
+import { getOpenedArticle, deleteArticle, likePost, unlikePost } from '../../redux/actions/actions';
+import css from './OpenedPost.module.css';
 
 const {
   post,
@@ -32,12 +32,16 @@ const {
 } = css;
 
 const OpenedPost = (props) => {
-  const { slug, getOpenedArticle, article, deleteArticle, user, loading, logged, likePost, unlikePost } = props;
+  const { slug, getOpenedArticle, article, deleteArticle, user, loading, logged, likePost, unlikePost, articles } =
+    props;
 
   const { title, description, body, tagList, favorited, favoritesCount, author, createdAt } = article;
 
+  const history = useHistory();
+
   const confirm = () => {
     deleteArticle(slug);
+    history.push('/');
   };
 
   const onHeartClick = () => {
@@ -47,7 +51,6 @@ const OpenedPost = (props) => {
       } else {
         likePost(slug);
       }
-      getOpenedArticle(slug);
     } else {
       alert('u need to log in');
     }
@@ -55,7 +58,7 @@ const OpenedPost = (props) => {
 
   useEffect(() => {
     getOpenedArticle(slug);
-  }, []);
+  }, [articles]);
 
   if (JSON.stringify(article).length === 2 || loading) {
     return <Spin />;
@@ -110,6 +113,7 @@ OpenedPost.propTypes = {
   slug: PropTypes.string.isRequired,
   getOpenedArticle: PropTypes.func.isRequired,
   article: PropTypes.instanceOf(Object),
+  articles: PropTypes.instanceOf(Object).isRequired,
   deleteArticle: PropTypes.func.isRequired,
   user: PropTypes.instanceOf(Object).isRequired,
   loading: PropTypes.bool.isRequired,
@@ -123,11 +127,12 @@ OpenedPost.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  slug: state.slug,
-  article: state.article,
-  user: state.user,
-  loading: state.loading,
-  logged: state.logged,
+  slug: state.articlesReducer.slug,
+  article: state.articlesReducer.article,
+  articles: state.articlesReducer.articles,
+  user: state.userReducer.user,
+  loading: state.reducer.loading,
+  logged: state.userReducer.logged,
 });
 
 const mapDispatchToProps = (dispatch) => ({

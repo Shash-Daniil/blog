@@ -33,10 +33,11 @@ export default class BlogService extends React.Component {
       body: JSON.stringify({ user }),
     });
 
-    response = await response.json();
-    if (localStorage.user) {
-      localStorage.setItem(user, JSON.stringify(response));
+    if (response.ok) {
+      localStorage.setItem('user', JSON.stringify(user));
     }
+
+    response = await response.json();
     return response;
   }
 

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { editArticle } from '../../actions/actions';
+import { editArticle } from '../../redux/actions/actions';
 import TemplateCreatePost from '../templateCreatePost/TemplateCreatePost';
 
 const EditPost = (props) => {
@@ -43,7 +43,7 @@ EditPost.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  article: state.article,
+  article: state.articlesReducer.article,
 });
 
 const mapDispatchToProps = (dispatch) => ({

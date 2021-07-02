@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import validation from '../../validation/validation';
-import * as actions from '../../actions/actions';
+import * as actions from '../../redux/actions/actions';
 import InputField from '../inputField/InputField';
 import BlueBtn from '../blueBtn/BlueBtn';
 import Suggest from '../suggest/Suggest';
@@ -65,7 +65,7 @@ SignIn.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  logged: state.logged,
+  logged: state.userReducer.logged,
 });
 
 const mapDispatchToProps = (dispatch) => {

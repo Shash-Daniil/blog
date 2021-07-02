@@ -1,41 +1,46 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import React from 'react';
+import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import TemplateCreatePost from '../templateCreatePost/TemplateCreatePost'
-import { createArticle } from '../../actions/actions'
+import TemplateCreatePost from '../templateCreatePost/TemplateCreatePost';
+import { createArticle } from '../../redux/actions/actions';
 
+const CreatePost = (props) => {
+  const defaultValue = {
+    tagList: [{ value: '' }],
+  };
 
-const CreatePost = props => {
+  const { createArticle } = props;
 
-    const defaultValue = {
-        tagList: [{value: ''}]
-    }
+  const history = useHistory();
 
-    const { createArticle } = props
+  const onFormSubmit = (data) => {
+    const user = { ...data };
+    user.tagList = data.tagList.map((elem) => elem.value);
+    createArticle(user);
+    history.push('/');
+  };
 
-    const history = useHistory()
-
-    const onFormSubmit = (data) => {
-        const user = {...data}
-        user.tagList = data.tagList.map(elem => elem.value)
-        createArticle(user)
-        history.push('/')
-    }
-
-    return (
-        <TemplateCreatePost onFormSubmit={onFormSubmit} title='' text='' description='' defaultValue={defaultValue} formTitle="Create new article"/>
-    )
-}
+  return (
+    <TemplateCreatePost
+      onFormSubmit={onFormSubmit}
+      title=""
+      text=""
+      description=""
+      defaultValue={defaultValue}
+      formTitle="Create new article"
+    />
+  );
+};
 
 CreatePost.propTypes = {
-    createArticle: PropTypes.func.isRequired
-}
+  createArticle: PropTypes.func.isRequired,
+};
 
-const mapStateToProps = () => ({})
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch) => ({
-        createArticle: (article) => dispatch(createArticle(article))
-    })
+  createArticle: (article) => dispatch(createArticle(article)),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePost)
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePost);

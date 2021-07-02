@@ -1,4 +1,4 @@
-import BlogService from '../services/BlogService';
+import BlogService from '../../services/BlogService';
 
 const blogService = new BlogService();
 
@@ -62,11 +62,11 @@ export const onRegister = (user) => (dispatch) => {
 };
 
 export const updateUser = (data) => (dispatch) => {
-  dispatch(changeUpdateUserStatus(false));
+  dispatch(changeUpdateUserStatus(true));
   blogService.onUpdateUser(data).then((resp) => {
     if (!resp.errors) {
       dispatch(setUser(resp.user));
-      dispatch(changeUpdateUserStatus(true));
+      dispatch(changeUpdateUserStatus(false));
     } else {
       dispatch(setErrors(resp.errors));
     }

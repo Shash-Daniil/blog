@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import validation from '../../validation/validation';
-import { updateUser } from '../../actions/actions';
+import { updateUser } from '../../redux/actions/actions';
 import InputField from '../inputField/InputField';
 import BlueBtn from '../blueBtn/BlueBtn';
 import css from './EditProfile.module.css';
@@ -29,7 +29,7 @@ const EditProfile = (props) => {
   // const lastUpdate = localStorage.getItem('')
 
   useEffect(() => {
-    if (updateUserStatus) {
+    if (!updateUserStatus) {
       history.push('/');
     }
   }, [updateUserStatus]);
@@ -76,7 +76,7 @@ EditProfile.propTypes = {
   updateUserStatus: PropTypes.bool.isRequired,
 };
 
-const mapStateToProps = (state) => ({ user: state.user, updateUserStatus: state.updateUserStatus });
+const mapStateToProps = (state) => ({ user: state.user, updateUserStatus: state.userReducer.updateUserStatus });
 
 const mapDispatchToProps = (dispatch) => ({ updateUser: (data) => dispatch(updateUser(data)) });
 

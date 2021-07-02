@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Avatar } from 'antd';
+import { uniqueId } from 'lodash';
 import format from 'date-fns/format';
 import Heart from '../Heart/Heart';
 import Tag from '../Tag/Tag';
-import { setSlug, likePost, unlikePost } from '../../actions/actions';
-import css from '../../App.module.css';
+import { setSlug, likePost, unlikePost } from '../../redux/actions/actions';
+import css from './Post.module.css';
 
 const {
   post,
@@ -54,11 +55,7 @@ const Post = (props) => {
           </div>
         </div>
         <div className={tags}>
-          {
-            /* eslint-disable-line react/no-array-index-key */ tagList
-              ? tagList.map((elem, index) => <Tag key={index} tagText={elem} />)
-              : null
-          }
+          {tagList ? tagList.map((elem) => <Tag key={uniqueId('id')} tagText={elem} />) : null}
         </div>
         <div className={postContentText}>{description}</div>
       </div>
@@ -84,7 +81,7 @@ Post.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  logged: state.logged,
+  logged: state.userReducer.logged,
 });
 
 const mapDispatchToProps = (dispatch) => ({

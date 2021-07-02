@@ -22,8 +22,8 @@ Posts.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  articles: state.articles,
-  loading: state.loading,
+  articles: state.articlesReducer.articles,
+  loading: state.reducer.loading,
 });
 
 const mapDispatchToProps = () => ({});
