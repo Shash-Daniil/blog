@@ -12,6 +12,7 @@
     "jest": true
   },
   "rules": {
+    "import/no-unresolved": "off",
   	"no-alert": "off",
   	"react-hooks/exhaustive-deps": "off",
   	"no-shadow": "off",

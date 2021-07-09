@@ -40,7 +40,8 @@ export const getArticles = (offset) => (dispatch) => {
   blogService
     .getArticles(offset)
     .then((resp) => dispatch(receiveArticles(resp)))
-    .then(() => dispatch(setLoading(false)));
+    .then(() => dispatch(setLoading(false)))
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const getOpenedArticle = (slug) => (dispatch) => {
@@ -48,39 +49,49 @@ export const getOpenedArticle = (slug) => (dispatch) => {
   blogService
     .getOpenedArticle(slug)
     .then((resp) => dispatch(receiveOpenedArticle(resp)))
-    .then(() => dispatch(setLoading(false)));
+    .then(() => dispatch(setLoading(false)))
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const onRegister = (user) => (dispatch) => {
-  blogService.onRegister(user).then((resp) => {
-    if (!resp.errors) {
-      dispatch(setUser(resp.user));
-    } else {
-      dispatch(setErrors(resp.errors));
-    }
-  });
+  blogService
+    .onRegister(user)
+    .then((resp) => {
+      if (!resp.errors) {
+        dispatch(setUser(resp.user));
+      } else {
+        dispatch(setErrors(resp.errors));
+      }
+    })
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const updateUser = (data) => (dispatch) => {
   dispatch(changeUpdateUserStatus(true));
-  blogService.onUpdateUser(data).then((resp) => {
-    if (!resp.errors) {
-      dispatch(setUser(resp.user));
-      dispatch(changeUpdateUserStatus(false));
-    } else {
-      dispatch(setErrors(resp.errors));
-    }
-  });
+  blogService
+    .onUpdateUser(data)
+    .then((resp) => {
+      if (!resp.errors) {
+        dispatch(setUser(resp.user));
+        dispatch(changeUpdateUserStatus(false));
+      } else {
+        dispatch(setErrors(resp.errors));
+      }
+    })
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const onLogin = (user) => (dispatch) => {
-  blogService.onLogin(user).then((resp) => {
-    if (!resp.errors) {
-      dispatch(setUser(resp.user));
-    } else {
-      dispatch(setErrors(resp.errors));
-    }
-  });
+  blogService
+    .onLogin(user)
+    .then((resp) => {
+      if (!resp.errors) {
+        dispatch(setUser(resp.user));
+      } else {
+        dispatch(setErrors(resp.errors));
+      }
+    })
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const createArticle = (article) => (dispatch) => {
@@ -92,23 +103,36 @@ export const createArticle = (article) => (dispatch) => {
         dispatch(setErrors(resp.errors));
       }
     })
-    .then(() => dispatch(getArticles(0)));
+    .then(() => dispatch(getArticles(1)))
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const editArticle = (slug, article) => (dispatch) => {
   dispatch(setLoading(true));
-  blogService.editArticle(slug, article).then(() => dispatch(getArticles(0)));
+  blogService
+    .editArticle(slug, article)
+    .then(() => dispatch(getArticles(1)))
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const deleteArticle = (slug) => (dispatch) => {
   dispatch(setLoading(true));
-  blogService.deleteArticle(slug).then(() => dispatch(getArticles(0)));
+  blogService
+    .deleteArticle(slug)
+    .then(() => dispatch(getArticles(1)))
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const likePost = (slug) => (dispatch) => {
-  blogService.likePost(slug).then((article) => dispatch(successLiked(slug, article)));
+  blogService
+    .likePost(slug)
+    .then((article) => dispatch(successLiked(slug, article)))
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };
 
 export const unlikePost = (slug) => (dispatch) => {
-  blogService.unlikePost(slug).then((article) => dispatch(successLiked(slug, article)));
+  blogService
+    .unlikePost(slug)
+    .then((article) => dispatch(successLiked(slug, article)))
+    .catch((err) => dispatch(setErrors({ [err.message]: '' })));
 };

@@ -1,138 +1,122 @@
 import React from 'react';
+import LocalStorageService from './LocalStorageService';
 
 export default class BlogService extends React.Component {
   apiBase = 'https://conduit.productionready.io/api';
 
-  /* eslint-disable-next-line react/sort-comp */
-  async getSrc(url) {
+  storage = new LocalStorageService();
+
+  /* eslint-disable react/sort-comp */
+  async sendRequest(url, opt) {
     const res = await fetch(`${this.apiBase}${url}`, {
-      method: 'GET',
       headers: {
-        Authorization: localStorage.getItem('token') ? `Token ${localStorage.getItem('token')}` : '',
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: this.storage.getItem('token') ? `Token ${this.storage.getItem('token')}` : '',
       },
+      ...opt,
     });
     return res.json();
   }
 
-  async getArticles(offset) {
-    const response = await this.getSrc(`/articles?offset=${offset}`);
+  async getArticles(page) {
+    const offset = (page - 1) * 20;
+    const response = await this.sendRequest(`/articles?offset=${offset}`);
     return response.articles;
   }
 
   async getOpenedArticle(slug) {
-    const response = await this.getSrc(`/articles/${slug}`);
+    const response = await this.sendRequest(`/articles/${slug}`);
     return response.article;
   }
 
   async onRegister(user) {
-    let response = await fetch(`${this.apiBase}/users`, {
+    const options = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
       body: JSON.stringify({ user }),
-    });
+    };
+    const response = await this.sendRequest('/users', options);
 
-    if (response.ok) {
-      localStorage.setItem('user', JSON.stringify(user));
-    }
+    const userInfo = {
+      ...response.user,
+      ...user,
+    };
 
-    response = await response.json();
+    this.storage.setItem('user', JSON.stringify(userInfo));
+
     return response;
   }
 
   async onLogin(user) {
-    let response = await fetch(`${this.apiBase}/users/login`, {
+    const options = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
       body: JSON.stringify({ user }),
-    });
+    };
+    const response = await this.sendRequest('/users/login', options);
 
-    if (response.ok) {
-      localStorage.setItem('user', JSON.stringify(user));
-    }
+    const userInfo = {
+      ...response.user,
+      ...user,
+    };
 
-    response = await response.json();
+    this.storage.setItem('user', JSON.stringify(userInfo));
     return response;
   }
 
   async onUpdateUser(user) {
-    let response = await fetch(`${this.apiBase}/user`, {
+    const options = {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization: `Token ${localStorage.getItem('token')}`,
-      },
       body: JSON.stringify({ user }),
-    });
+    };
+    const response = await this.sendRequest('/user', options);
 
-    if (response.ok) {
-      localStorage.setItem('user', JSON.stringify(user));
-    }
+    const userInfo = {
+      ...response.user,
+      ...user,
+    };
 
-    response = await response.json();
+    this.storage.setItem('user', JSON.stringify(userInfo));
+
     return response;
   }
 
   async createArticle(article) {
-    let response = await fetch(`${this.apiBase}/articles`, {
+    const options = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization: `Token ${localStorage.getItem('token')}`,
-      },
       body: JSON.stringify({ article }),
-    });
-    response = await response.json();
+    };
+    const response = await this.sendRequest('/articles', options);
     return response;
   }
 
   async deleteArticle(slug) {
-    await fetch(`${this.apiBase}/articles/${slug}`, {
+    const options = {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization: `Token ${localStorage.getItem('token')}`,
-      },
-    });
+    };
+    await this.sendRequest(`/articles/${slug}`, options);
   }
 
   async editArticle(slug, article) {
-    let response = await fetch(`${this.apiBase}/articles/${slug}`, {
+    const options = {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization: `Token ${localStorage.getItem('token')}`,
-      },
       body: JSON.stringify({ article }),
-    });
-    response = await response.json();
+    };
+    const response = await this.sendRequest(`/articles/${slug}`, options);
     return response;
   }
 
   async likePost(slug) {
-    let response = await fetch(`${this.apiBase}/articles/${slug}/favorite`, {
+    const options = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization: `Token ${localStorage.getItem('token')}`,
-      },
-    });
-    response = await response.json();
+    };
+    const response = await this.sendRequest(`/articles/${slug}/favorite`, options);
     return response;
   }
 
   async unlikePost(slug) {
-    let response = await fetch(`${this.apiBase}/articles/${slug}/favorite`, {
+    const options = {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization: `Token ${localStorage.getItem('token')}`,
-      },
-    });
-    response = await response.json();
+    };
+    const response = await this.sendRequest(`/articles/${slug}/favorite`, options);
     return response;
   }
 }

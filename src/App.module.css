@@ -22,28 +22,18 @@ input:not(input[type="checkbox"]), textarea {
     padding: 5px 12px;
 }
 
-.blohLogo {
-    font-size: 18px;
-    color: #000000;
-}
-
-.header {
-    padding: 0 22px;
-    height: 80px;
-    background-color: #FFFFFF;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.headerMenu {
-    
-}
-
 .main {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #EBEEF3;
+    width: 100%;
+    max-width: 957px;
+    padding: 0 16px;
+    margin: 0 auto;
+}
+
+.pagination {
+    margin-top: '20px'
 }
